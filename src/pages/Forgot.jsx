@@ -1,17 +1,16 @@
 import React from "react";
-
-import { Link } from "react-router-dom";
 import { Router } from "../router/Router";
-import { ArrowLeft } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 import styled from "styled-components";
+import Back from "../components/Back";
 
 export default function Forgot() {
   return (
     <Container>
       <Main>
         <Wrapper>
-          <ArrowLeft />
+          <Back route={Router.Login} />
           <Title>Mot de passe oublié</Title>
           <Form>
             <Input placeholder="E-mail" />

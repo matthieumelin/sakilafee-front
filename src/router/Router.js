@@ -6,5 +6,6 @@ export const Router = {
   Forgot: "/mdp-oublie",
   Cart: "/panier",
   Product: "/produit/:id",
-  ProductList: "/produits"
+  ProductList: "/produits",
+  Account: "/mon-compte"
 };

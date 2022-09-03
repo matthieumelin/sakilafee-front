@@ -1,15 +1,26 @@
-import React from "react";
-
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Router } from "../router/Router";
 
 import styled from "styled-components";
 
+
+import Back from "../components/Back";
+
 export default function Login() {
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    if (token) navigate(Router.Account);
+  });
+
   return (
     <Container>
       <Main>
         <Wrapper>
+          <Back route={Router.Home} />
           <Title>Se connecter</Title>
           <Form>
             <Input placeholder="E-mail" />

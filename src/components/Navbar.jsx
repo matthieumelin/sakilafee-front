@@ -1,13 +1,18 @@
-import { Close, Menu, Person, ShoppingCart } from "@mui/icons-material";
 import React, { useState } from "react";
+import { Close, Menu, Person, ShoppingCart } from "@mui/icons-material";
 import { Link, NavLink } from "react-router-dom";
+import { Router } from "../router/Router";
+
 import styled from "styled-components";
 
 import LogoImage from "../assets/logo.png";
-import { Router } from "../router/Router";
+
+import { useSelector } from "react-redux";
 
 export default function Navbar() {
+  const token = useSelector((state) => state.user.token);
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Container>
       <Wrapper>
@@ -35,9 +40,9 @@ export default function Navbar() {
           </RightLink>
         </RightItem>
         <RightItem>
-          <RightLink to={Router.Login}>
+          <RightLink to={token ? Router.Profil : Router.Login}>
             <Person />
-            Mon compte
+            {token ? "Mon compte" : "Se connecter"}
           </RightLink>
         </RightItem>
       </Right>
@@ -111,6 +116,8 @@ const Right = styled.ul`
   @media screen and (min-width: 1024px) {
     position: absolute;
     right: 20px;
+    display: flex;
+    gap: 20px;
   }
 `;
 const RightItem = styled.li``;

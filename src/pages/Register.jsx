@@ -1,11 +1,18 @@
-import React from "react";
-
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Router } from "../router/Router";
+import { useSelector } from "react-redux";
 
 import styled from "styled-components";
 
 export default function Register() {
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    if (token) navigate(Router.Account);
+  });
+
   return (
     <Container>
       <Main>

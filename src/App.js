@@ -17,6 +17,7 @@ import Product from "./pages/Product";
 import Forgot from "./pages/Forgot";
 import NotFound from "./pages/NotFound";
 import Contact from "./pages/Contact";
+import Account from "./pages/Account";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
       <HelmetProvider>
         <BrowserRouter>
           <Routes>
+            <Route path={Router.Account} element={<Account />} />
             <Route path={Router.Contact} element={<Contact />} />
             <Route path={Router.Forgot} element={<Forgot />} />
             <Route path={Router.Product} element={<Product />} />
