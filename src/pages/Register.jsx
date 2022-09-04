@@ -1,13 +1,65 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Router } from "../router/Router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setErrors } from "../redux/reducers";
 
 import styled from "styled-components";
 
+import Errors from "../components/Errors";
+
+import Messages from "../utils/Messages";
+import { isValidEmail } from "../utils/Formatter";
+
 export default function Register() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token);
+  const errors = useSelector((state) => state.errors);
+  const [inputs, setInputs] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    cgu: false,
+  });
+
+  const handleInput = (event) => {
+    const id = event.target.id;
+    setInputs({
+      ...inputs,
+      [id]: id === "cgu" ? !inputs.cgu : event.target.value,
+    });
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    let tempErrors = [];
+
+    if (!inputs.firstName) {
+      tempErrors["firstName"] = Messages.firstName.required;
+    }
+    if (!inputs.lastName) {
+      tempErrors["lastName"] = Messages.lastName.required;
+    }
+    if (!inputs.email) {
+      tempErrors["email"] = Messages.email.required;
+    } else if (!isValidEmail(inputs.email)) {
+      tempErrors["email"] = Messages.email.badFormat;
+    }
+    if (!inputs.password) {
+      tempErrors["password"] = Messages.password.required;
+    } else if (inputs.password.length < 8) {
+      tempErrors["password"] = Messages.password.min;
+    }
+
+    if (Object.keys(tempErrors).length) {
+      dispatch(setErrors(tempErrors));
+    } else {
+      console.log("ok");
+    }
+  };
 
   useEffect(() => {
     if (token) navigate(Router.Account);
@@ -18,14 +70,26 @@ export default function Register() {
       <Main>
         <Wrapper>
           <Title>S'enregistrer</Title>
-          <Form>
+          {errors && Object.keys(errors).length ? <Errors errors={errors} /> : null}
+          <Form method="post" onSubmit={onSubmit}>
             <FormGroup>
-              <Input placeholder="Prénom" />
-              <Input placeholder="Nom" />
+              <Input
+                placeholder="Prénom"
+                id="firstName"
+                onChange={handleInput}
+              />
+              <Input placeholder="Nom" id="lastName" onChange={handleInput} />
             </FormGroup>
             <FormGroup>
-              <Input placeholder="E-mail" />
-              <Input placeholder="Mot de passe" />
+              <Input placeholder="E-mail" id="email" onChange={handleInput} />
+              <Input
+                placeholder="Mot de passe"
+                id="password"
+                onChange={handleInput}
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormLabel htmlFor=""></FormLabel>
             </FormGroup>
             <Agreement>
               En créant un compte, je consens au traitement de mes données

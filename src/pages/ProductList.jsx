@@ -16,7 +16,6 @@ import { setCategoryItems } from "../redux/reducers";
 export default function ProductList() {
   const categoryItems = useSelector((state) => state.products.categoryItems);
   const dispatch = useDispatch();
-
   const [filters, setFilters] = useState([{ color: "Blanc", size: "" }]);
 
   return (

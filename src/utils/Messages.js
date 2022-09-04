@@ -1,4 +1,10 @@
-export const Messages = {
+const Messages = {
+  firstName: {
+    required: "Veuillez remplir le champ du prénom.",
+  },
+  lastName: {
+    required: "Veuillez remplir le champ du nom.",
+  },
   password: {
     required: "Veuillez remplir le champ mot de passe.",
     min: "Veuillez entrer au moins 8 caractères.",
@@ -11,3 +17,5 @@ export const Messages = {
     required: "Veuillez cocher les CGU.",
   },
 };
+
+export default Messages;
