@@ -1,28 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Router } from "../router/Router";
-import { useSelector, useDispatch } from "react-redux";
-import { setErrors } from "../redux/reducers";
+import { useSelector } from "react-redux";
 
 import styled from "styled-components";
-
-import Errors from "../components/Errors";
 
 import Messages from "../utils/Messages";
 import { isValidEmail } from "../utils/Formatter";
 
+import Error from "../components/Error";
+
 export default function Register() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token);
-  const errors = useSelector((state) => state.errors);
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    cgu: false,
+    cgu: true,
   });
+  const initialErrors = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    cgu: ""
+  };
+  const [errors, setErrors] = useState(initialErrors);
 
   const handleInput = (event) => {
     const id = event.target.id;
@@ -30,32 +35,37 @@ export default function Register() {
       ...inputs,
       [id]: id === "cgu" ? !inputs.cgu : event.target.value,
     });
+
+    console.log(inputs)
   };
 
   const onSubmit = (event) => {
     event.preventDefault();
 
-    let tempErrors = [];
+    let tempErrors = {};
 
     if (!inputs.firstName) {
-      tempErrors["firstName"] = Messages.firstName.required;
+      tempErrors.firstName = Messages.firstName.required;
     }
     if (!inputs.lastName) {
-      tempErrors["lastName"] = Messages.lastName.required;
+      tempErrors.lastName = Messages.lastName.required;
     }
     if (!inputs.email) {
-      tempErrors["email"] = Messages.email.required;
+      tempErrors.email = Messages.email.required;
     } else if (!isValidEmail(inputs.email)) {
-      tempErrors["email"] = Messages.email.badFormat;
+      tempErrors.email = Messages.email.badFormat;
     }
     if (!inputs.password) {
-      tempErrors["password"] = Messages.password.required;
+      tempErrors.password = Messages.password.required;
     } else if (inputs.password.length < 8) {
-      tempErrors["password"] = Messages.password.min;
+      tempErrors.password = Messages.password.min;
+    }
+    if (!inputs.cgu) {
+      tempErrors.cgu = Messages.cgu.required
     }
 
     if (Object.keys(tempErrors).length) {
-      dispatch(setErrors(tempErrors));
+      setErrors(tempErrors);
     } else {
       console.log("ok");
     }
@@ -70,26 +80,47 @@ export default function Register() {
       <Main>
         <Wrapper>
           <Title>S'enregistrer</Title>
-          {errors && Object.keys(errors).length ? <Errors errors={errors} /> : null}
           <Form method="post" onSubmit={onSubmit}>
             <FormGroup>
-              <Input
-                placeholder="Prénom"
-                id="firstName"
-                onChange={handleInput}
-              />
-              <Input placeholder="Nom" id="lastName" onChange={handleInput} />
+              <Column>
+                <Input
+                  placeholder="Prénom"
+                  id="firstName"
+                  onChange={handleInput}
+                  hasError={errors.firstName}
+                />
+                {errors.firstName ? <Error message={errors.firstName} /> : null}
+              </Column>
+              <Column>
+                <Input placeholder="Nom"
+                  id="lastName" onChange={handleInput} hasError={errors.lastName} />
+                {errors.lastName ? <Error message={errors.lastName} /> : null}
+              </Column>
             </FormGroup>
             <FormGroup>
-              <Input placeholder="E-mail" id="email" onChange={handleInput} />
-              <Input
-                placeholder="Mot de passe"
-                id="password"
-                onChange={handleInput}
-              />
+              <Column>
+                <Input placeholder="E-mail"
+                  id="email"
+                  onChange={handleInput}
+                  hasError={errors.email} />
+                {errors.email ? <Error message={errors.email} /> : null}
+              </Column>
+              <Column>
+                <Input
+                  placeholder="Mot de passe"
+                  id="password"
+                  onChange={handleInput}
+                  hasError={errors.password}
+                />
+                {errors.password ? <Error message={errors.password} /> : null}
+              </Column>
             </FormGroup>
             <FormGroup>
-              <FormLabel htmlFor=""></FormLabel>
+              <Column>
+                <Checkbox type="checkbox" id="cgu" onChange={handleInput} />
+                <FormLabel htmlFor="cgu">J'accepte les conditions générales d'utilisations</FormLabel>
+                {errors.cgu ? <Error message={errors.cgu} /> : null}
+              </Column>
             </FormGroup>
             <Agreement>
               En créant un compte, je consens au traitement de mes données
@@ -97,7 +128,7 @@ export default function Register() {
               <AgreementStrong>politique de confidentialité</AgreementStrong>
             </Agreement>
             <FormWrapper>
-              <Button>S'enregistrer</Button>
+              <Button type="submit">S'enregistrer</Button>
               <CustomLink to={Router.Login}>Je me connecte.</CustomLink>
             </FormWrapper>
           </Form>
@@ -160,13 +191,22 @@ const FormGroup = styled.div`
   }
 `;
 
+const FormLabel = styled.label``;
+
+const Column = styled.div`
+width: 100%;
+`;
+
 const Input = styled.input`
   width: 100%;
   box-sizing: border-box;
   padding: 10px;
   margin: 10px 0;
   font-family: inherit;
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.hasError ? "red" : "black"};
+`;
+
+const Checkbox = styled.input`
 `;
 
 const Agreement = styled.span`
