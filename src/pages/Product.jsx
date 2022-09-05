@@ -12,24 +12,20 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 
-import { shallowEqual, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function Product() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const selectedProduct = useSelector(
-    (state) =>
-      state.products.items.find((item) => {
-        return item.id === id;
-      }),
-    shallowEqual
+  const product = useSelector((state) =>
+    state.products.items.find((product) => product.id === parseInt(id))
   );
 
   useEffect(() => {
-    if (!selectedProduct) {
+    if (!product) {
       return navigate(Router.ProductList);
     }
-  }, [selectedProduct]);
+  });
 
   return (
     <Container>

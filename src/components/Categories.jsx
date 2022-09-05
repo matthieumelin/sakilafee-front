@@ -17,7 +17,7 @@ const Container = styled.div`
   gap: 20px;
   flex-direction: column;
   padding: 0 20px 20px 20px;
-
+  
   @media screen and (min-width: 1024px) {
     flex-direction: row;
   }

@@ -4,7 +4,9 @@ import {
   VisibilityRounded,
   ShoppingCartOutlined,
 } from "@mui/icons-material";
+
 import styled from "styled-components";
+
 import { Link } from "react-router-dom";
 import { Router } from "../router/Router";
 

@@ -25,7 +25,7 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
-    cgu: ""
+    cgu: "",
   };
   const [errors, setErrors] = useState(initialErrors);
 
@@ -35,8 +35,6 @@ export default function Register() {
       ...inputs,
       [id]: id === "cgu" ? !inputs.cgu : event.target.value,
     });
-
-    console.log(inputs)
   };
 
   const onSubmit = (event) => {
@@ -61,7 +59,7 @@ export default function Register() {
       tempErrors.password = Messages.password.min;
     }
     if (!inputs.cgu) {
-      tempErrors.cgu = Messages.cgu.required
+      tempErrors.cgu = Messages.cgu.required;
     }
 
     if (Object.keys(tempErrors).length) {
@@ -92,17 +90,23 @@ export default function Register() {
                 {errors.firstName ? <Error message={errors.firstName} /> : null}
               </Column>
               <Column>
-                <Input placeholder="Nom"
-                  id="lastName" onChange={handleInput} hasError={errors.lastName} />
+                <Input
+                  placeholder="Nom"
+                  id="lastName"
+                  onChange={handleInput}
+                  hasError={errors.lastName}
+                />
                 {errors.lastName ? <Error message={errors.lastName} /> : null}
               </Column>
             </FormGroup>
             <FormGroup>
               <Column>
-                <Input placeholder="E-mail"
+                <Input
+                  placeholder="E-mail"
                   id="email"
                   onChange={handleInput}
-                  hasError={errors.email} />
+                  hasError={errors.email}
+                />
                 {errors.email ? <Error message={errors.email} /> : null}
               </Column>
               <Column>
@@ -118,7 +122,9 @@ export default function Register() {
             <FormGroup>
               <Column>
                 <Checkbox type="checkbox" id="cgu" onChange={handleInput} />
-                <FormLabel htmlFor="cgu">J'accepte les conditions générales d'utilisations</FormLabel>
+                <FormLabel htmlFor="cgu">
+                  J'accepte les conditions générales d'utilisations
+                </FormLabel>
                 {errors.cgu ? <Error message={errors.cgu} /> : null}
               </Column>
             </FormGroup>
@@ -194,7 +200,7 @@ const FormGroup = styled.div`
 const FormLabel = styled.label``;
 
 const Column = styled.div`
-width: 100%;
+  width: 100%;
 `;
 
 const Input = styled.input`
@@ -203,11 +209,10 @@ const Input = styled.input`
   padding: 10px;
   margin: 10px 0;
   font-family: inherit;
-  border: 1px solid ${(props) => props.hasError ? "red" : "black"};
+  border: 1px solid ${(props) => (props.hasError ? "red" : "black")};
 `;
 
-const Checkbox = styled.input`
-`;
+const Checkbox = styled.input``;
 
 const Agreement = styled.span`
   margin: 10px 0px;
