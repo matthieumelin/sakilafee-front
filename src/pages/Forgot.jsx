@@ -31,7 +31,11 @@ const Container = styled.div`
   background-color: #e5e5e5;
 `;
 
-const Main = styled.main``;
+const Main = styled.main`
+max-width: 425px;
+width: 100%;
+margin: 0 20px;
+`;
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -66,7 +70,7 @@ const Button = styled.button`
   background-color: black;
   color: white;
   cursor: pointer;
-  margin: 10px 0;
+  margin: 10px 0 0 0;
   font-family: inherit;
   text-transform: uppercase;
 `;

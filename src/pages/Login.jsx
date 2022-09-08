@@ -1,20 +1,60 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Router } from "../router/Router";
 
 import styled from "styled-components";
 
-
 import Back from "../components/Back";
+
+import Messages from "../utils/Messages";
+import Error from "../components/Error";
 
 export default function Login() {
   const navigate = useNavigate();
   const token = useSelector((state) => state.user.token);
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+  const initialErrors = {
+    email: "",
+    password: "",
+  };
+  const [errors, setErrors] = useState(initialErrors);
 
   useEffect(() => {
     if (token) navigate(Router.Account);
   });
+
+  const handleInput = (event) => {
+    setInputs({ ...inputs, [event.target.id]: event.target.value });
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    let tempErrors = {};
+
+    if (!inputs.email) {
+      tempErrors.email = Messages.email.required;
+    }
+    // else if (!isValidEmail(inputs.email)) {
+    //   tempErrors.email = Messages.email.badFormat;
+    // }
+    if (!inputs.password) {
+      tempErrors.password = Messages.password.required;
+    }
+    //  else if (inputs.password.length < 8) {
+    //   tempErrors.password = Messages.password.min;
+    // }
+
+    if (Object.keys(tempErrors).length) {
+      setErrors(tempErrors);
+    } else {
+      console.log("ok");
+    }
+  };
 
   return (
     <Container>
@@ -22,14 +62,38 @@ export default function Login() {
         <Wrapper>
           <Back route={Router.Home} />
           <Title>Se connecter</Title>
-          <Form>
-            <Input placeholder="E-mail" />
-            <Input placeholder="Mot de passe" />
-            <Button>Se connecter</Button>
-            <CustomLink to={Router.Forgot}>Mot de passe oublié ?</CustomLink>
-            <CustomLink to={Router.Register}>
-              Créer un nouveau compte
-            </CustomLink>
+          <Form method="post" onSubmit={onSubmit}>
+            <FormGroup>
+              <Input
+                type="email"
+                id="email"
+                placeholder="E-mail"
+                value={inputs.email}
+                onChange={handleInput}
+              />
+              {errors.email ? <Error message={errors.email} /> : null}
+            </FormGroup>
+            <FormGroup>
+              <Input
+                type="password"
+                id="password"
+                placeholder="Mot de passe"
+                value={inputs.password}
+                onChange={handleInput}
+              />
+              {errors.password ? <Error message={errors.password} /> : null}
+            </FormGroup>
+            <FormGroup>
+              <Button type="submit">Se connecter</Button>
+            </FormGroup>
+            <FormGroup>
+              <CustomLink to={Router.Forgot}>Mot de passe oublié ?</CustomLink>
+            </FormGroup>
+            <FormGroup>
+              <CustomLink to={Router.Register}>
+                Créer un nouveau compte
+              </CustomLink>
+            </FormGroup>
           </Form>
         </Wrapper>
       </Main>
@@ -52,7 +116,11 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Main = styled.main``;
+const Main = styled.main`
+max-width: 425px;
+width: 100%;
+margin: 0 20px;
+`;
 
 const Wrapper = styled.div`
   padding: 30px;
@@ -63,11 +131,16 @@ const Title = styled.h1`
   font-size: 24px;
   font-weight: 300;
   text-transform: uppercase;
+  margin: 20px 0 0 0;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+`;
+
+const FormGroup = styled.div`
+  margin: 10px 0 0 0;
 `;
 
 const Input = styled.input`

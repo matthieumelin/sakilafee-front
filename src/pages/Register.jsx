@@ -9,6 +9,7 @@ import Messages from "../utils/Messages";
 import { isValidEmail } from "../utils/Formatter";
 
 import Error from "../components/Error";
+import axios from "axios";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function Register() {
     lastName: "",
     email: "",
     password: "",
-    cgu: true,
+    cgu: false,
   });
   const initialErrors = {
     firstName: "",
@@ -30,10 +31,10 @@ export default function Register() {
   const [errors, setErrors] = useState(initialErrors);
 
   const handleInput = (event) => {
-    const id = event.target.id;
+    const target = event.target;
     setInputs({
       ...inputs,
-      [id]: id === "cgu" ? !inputs.cgu : event.target.value,
+      [target.id]: target.id === "cgu" ? !inputs.cgu : target.value,
     });
   };
 
@@ -65,7 +66,20 @@ export default function Register() {
     if (Object.keys(tempErrors).length) {
       setErrors(tempErrors);
     } else {
-      console.log("ok");
+      axios
+        .post("http://localhost:3030/api/v1/users/register", {
+          firstName: inputs.firstName,
+          lastName: inputs.lastName,
+          email: inputs.email,
+          password: inputs.password,
+        })
+        .then((response) => {
+          navigate(Router.Login);
+        })
+        .catch((error) => {
+          tempErrors.email = error.response.data.message;
+          setErrors(tempErrors);
+        });
     }
   };
 
@@ -82,6 +96,7 @@ export default function Register() {
             <FormGroup>
               <Column>
                 <Input
+                  type="text"
                   placeholder="Prénom"
                   id="firstName"
                   onChange={handleInput}
@@ -91,6 +106,7 @@ export default function Register() {
               </Column>
               <Column>
                 <Input
+                  type="text"
                   placeholder="Nom"
                   id="lastName"
                   onChange={handleInput}
@@ -102,6 +118,7 @@ export default function Register() {
             <FormGroup>
               <Column>
                 <Input
+                  type="email"
                   placeholder="E-mail"
                   id="email"
                   onChange={handleInput}
@@ -111,6 +128,7 @@ export default function Register() {
               </Column>
               <Column>
                 <Input
+                  type="password"
                   placeholder="Mot de passe"
                   id="password"
                   onChange={handleInput}
@@ -121,7 +139,12 @@ export default function Register() {
             </FormGroup>
             <FormGroup>
               <Column>
-                <Checkbox type="checkbox" id="cgu" onChange={handleInput} />
+                <Checkbox
+                  type="checkbox"
+                  id="cgu"
+                  checked={inputs.cgu}
+                  onChange={handleInput}
+                />
                 <FormLabel htmlFor="cgu">
                   J'accepte les conditions générales d'utilisations
                 </FormLabel>
@@ -175,6 +198,7 @@ const Title = styled.h1`
   font-size: 24px;
   font-weight: 300;
   text-transform: uppercase;
+  margin: 20px 0 0 0;
 `;
 
 const Form = styled.form`
@@ -201,6 +225,7 @@ const FormLabel = styled.label``;
 
 const Column = styled.div`
   width: 100%;
+  margin: 10px 0 0 0;
 `;
 
 const Input = styled.input`
@@ -210,6 +235,7 @@ const Input = styled.input`
   margin: 10px 0;
   font-family: inherit;
   border: 1px solid ${(props) => (props.hasError ? "red" : "black")};
+  outline: none;
 `;
 
 const Checkbox = styled.input``;

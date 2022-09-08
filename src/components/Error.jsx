@@ -15,7 +15,9 @@ Error.propTypes = {
 }
 
 const Container = styled.p`
-  background-color: red;
   padding: 0;
   margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: red;
 `;
