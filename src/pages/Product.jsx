@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { Router } from "../router/Router";
 
 import { Add, Remove } from "@mui/icons-material";
@@ -15,17 +15,14 @@ import Newsletter from "../components/Newsletter";
 import { useSelector } from "react-redux";
 
 export default function Product() {
-  const navigate = useNavigate();
   const { id } = useParams();
   const product = useSelector((state) =>
     state.products.items.find((product) => product.id === parseInt(id))
   );
 
-  useEffect(() => {
-    if (!product) {
-      return navigate(Router.ProductList);
-    }
-  });
+  if (!product) {
+    return <Navigate to={Router.ProductList} />;
+  }
 
   return (
     <Container>

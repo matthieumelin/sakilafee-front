@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Router } from "../router/Router";
 import { useSelector } from "react-redux";
@@ -29,6 +29,10 @@ export default function Register() {
     cgu: "",
   };
   const [errors, setErrors] = useState(initialErrors);
+
+  useEffect(() => {
+    if (token) navigate(Router.Account);
+  });
 
   const handleInput = (event) => {
     const target = event.target;
@@ -82,10 +86,6 @@ export default function Register() {
         });
     }
   };
-
-  useEffect(() => {
-    if (token) navigate(Router.Account);
-  });
 
   return (
     <Container>

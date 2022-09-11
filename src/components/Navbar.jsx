@@ -40,7 +40,7 @@ export default function Navbar() {
           </RightLink>
         </RightItem>
         <RightItem>
-          <RightLink to={token ? Router.Profil : Router.Login}>
+          <RightLink to={token ? Router.Account : Router.Login}>
             <Person />
             {token ? "Mon compte" : "Se connecter"}
           </RightLink>

@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Router } from "../router/Router";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import { useSelector } from "react-redux";
 
 import styled from "styled-components";
+
 import Back from "../components/Back";
 
 export default function Forgot() {
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    if (token) navigate(Router.Home);
+  });
+
   return (
     <Container>
       <Main>
@@ -32,9 +42,9 @@ const Container = styled.div`
 `;
 
 const Main = styled.main`
-max-width: 425px;
-width: 100%;
-margin: 0 20px;
+  max-width: 425px;
+  width: 100%;
+  margin: 0 20px;
 `;
 
 const Wrapper = styled.div`

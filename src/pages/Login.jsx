@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Router } from "../router/Router";
 
 import styled from "styled-components";
 
 import Back from "../components/Back";
+import Error from "../components/Error";
 
 import Messages from "../utils/Messages";
-import Error from "../components/Error";
+
+import axios from "axios";
+
+import { setToken } from "../redux/reducers";
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token);
   const [inputs, setInputs] = useState({
     email: "",
@@ -24,7 +29,9 @@ export default function Login() {
   const [errors, setErrors] = useState(initialErrors);
 
   useEffect(() => {
-    if (token) navigate(Router.Account);
+    if (token) {
+      navigate(Router.Account);
+    }
   });
 
   const handleInput = (event) => {
@@ -52,7 +59,21 @@ export default function Login() {
     if (Object.keys(tempErrors).length) {
       setErrors(tempErrors);
     } else {
-      console.log("ok");
+      axios
+        .post("http://localhost:3030/api/v1/users/login", {
+          email: inputs.email,
+          password: inputs.password,
+        })
+        .then((response) => {
+          const jwt = response.data.accessToken;
+          sessionStorage.setItem("token", jwt);
+          dispatch(setToken(jwt));
+          navigate(Router.Account);
+        })
+        .catch((error) => {
+          tempErrors.email = error.response.data.message;
+          setErrors(tempErrors);
+        });
     }
   };
 
@@ -70,6 +91,7 @@ export default function Login() {
                 placeholder="E-mail"
                 value={inputs.email}
                 onChange={handleInput}
+                hasError={errors.email}
               />
               {errors.email ? <Error message={errors.email} /> : null}
             </FormGroup>
@@ -80,6 +102,7 @@ export default function Login() {
                 placeholder="Mot de passe"
                 value={inputs.password}
                 onChange={handleInput}
+                hasError={errors.password}
               />
               {errors.password ? <Error message={errors.password} /> : null}
             </FormGroup>
@@ -117,9 +140,9 @@ const Container = styled.div`
 `;
 
 const Main = styled.main`
-max-width: 425px;
-width: 100%;
-margin: 0 20px;
+  max-width: 425px;
+  width: 100%;
+  margin: 0 20px;
 `;
 
 const Wrapper = styled.div`
@@ -150,7 +173,7 @@ const Input = styled.input`
   margin: 10px 0;
   padding: 10px;
   font-family: inherit;
-  border: 1px solid black;
+  border: 1px solid ${(props) => (props.hasError ? "red" : "black")};
   outline: none;
 `;
 
