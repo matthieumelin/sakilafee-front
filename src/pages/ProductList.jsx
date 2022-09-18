@@ -2,11 +2,11 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 
-import Navbar from "../components/Navbar";
-import Announcement from "../components/Announcement";
-import Products from "../components/Products";
-import Newsletter from "../components/Newsletter";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar.component";
+import Announcement from "../components/Announcement.component";
+import Products from "../components/Products.component";
+import Newsletter from "../components/Newsletter.component";
+import Footer from "../components/Footer.component";
 
 import { categories, productFilters } from "../data";
 

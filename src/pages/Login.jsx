@@ -5,8 +5,8 @@ import { Router } from "../router/Router";
 
 import styled from "styled-components";
 
-import Back from "../components/Back";
-import Error from "../components/Error";
+import Back from "../components/Back.component";
+import Error from "../components/Error.component";
 
 import Messages from "../utils/Messages";
 
@@ -21,6 +21,7 @@ export default function Login() {
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
+    remember: false,
   });
   const initialErrors = {
     email: "",
@@ -35,7 +36,8 @@ export default function Login() {
   });
 
   const handleInput = (event) => {
-    setInputs({ ...inputs, [event.target.id]: event.target.value });
+    const id = event.target.id;
+    setInputs({ ...inputs, [id]: id === "remember" ? !inputs.remember : event.target.value });
   };
 
   const onSubmit = (event) => {
@@ -65,8 +67,14 @@ export default function Login() {
           password: inputs.password,
         })
         .then((response) => {
-          const jwt = response.data.accessToken;
-          sessionStorage.setItem("token", jwt);
+          const jwt = response.data.data.token;
+          
+          if (inputs.remember) {
+            localStorage.setItem("token", jwt);
+          } else {
+            sessionStorage.setItem("token", jwt);
+          }
+
           dispatch(setToken(jwt));
           navigate(Router.Account);
         })
@@ -105,6 +113,18 @@ export default function Login() {
                 hasError={errors.password}
               />
               {errors.password ? <Error message={errors.password} /> : null}
+            </FormGroup>
+            <FormGroup>
+              <Column>
+                <Checkbox
+                  type="checkbox"
+                  id="remember"
+                  checked={inputs.remember}
+                  onChange={handleInput}
+                />
+                <FormLabel htmlFor="remember">Se souvenir de moi</FormLabel>
+                {errors.cgu ? <Error message={errors.cgu} /> : null}
+              </Column>
             </FormGroup>
             <FormGroup>
               <Button type="submit">Se connecter</Button>
@@ -165,6 +185,15 @@ const Form = styled.form`
 const FormGroup = styled.div`
   margin: 10px 0 0 0;
 `;
+
+const FormLabel = styled.label``;
+
+const Column = styled.div`
+  width: 100%;
+  margin: 10px 0 0 0;
+`;
+
+const Checkbox = styled.input``;
 
 const Input = styled.input`
   flex: 1;

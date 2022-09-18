@@ -2,13 +2,13 @@ import React from "react";
 
 import styled from "styled-components";
 
-import Announcement from "../components/Announcement";
-import Categories from "../components/Categories";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import Newsletter from "../components/Newsletter";
-import Products from "../components/Products";
-import Slider from "../components/Slider";
+import Announcement from "../components/Announcement.component";
+import Categories from "../components/Categories.component";
+import Footer from "../components/Footer.component";
+import Navbar from "../components/Navbar.component";
+import Newsletter from "../components/Newsletter.component";
+import Products from "../components/Products.component";
+import Slider from "../components/Slider.component";
 
 export default function Home() {
   return (

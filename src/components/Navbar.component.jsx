@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 
 export default function Navbar() {
   const token = useSelector((state) => state.user.token);
+  const cart = useSelector((state) => state.user.cart);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -36,7 +37,7 @@ export default function Navbar() {
         <RightItem>
           <RightLink to={Router.Cart}>
             <ShoppingCart />
-            Panier
+            Panier {cart.length ? `(${cart.length})` : null}
           </RightLink>
         </RightItem>
         <RightItem>

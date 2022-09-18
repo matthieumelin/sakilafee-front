@@ -2,7 +2,7 @@ import React from "react";
 
 import styled from "styled-components";
 
-import Product from "./Product";
+import Product from "./Product.component";
 
 import { useSelector } from "react-redux";
 

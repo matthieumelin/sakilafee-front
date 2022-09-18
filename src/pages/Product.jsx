@@ -7,10 +7,10 @@ import { Add, Remove } from "@mui/icons-material";
 
 import styled from "styled-components";
 
-import Announcement from "../components/Announcement";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import Newsletter from "../components/Newsletter";
+import Announcement from "../components/Announcement.component";
+import Footer from "../components/Footer.component";
+import Navbar from "../components/Navbar.component";
+import Newsletter from "../components/Newsletter.component";
 
 import { useSelector } from "react-redux";
 

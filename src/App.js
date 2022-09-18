@@ -18,6 +18,7 @@ import Forgot from "./pages/Forgot";
 import NotFound from "./pages/NotFound";
 import Contact from "./pages/Contact";
 import Account from "./pages/Account";
+import Logout from "./pages/Logout";
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
       <HelmetProvider>
         <BrowserRouter>
           <Routes>
+            <Route path={Router.Logout} element={<Logout />} />
+            <Route path={Router.NotFound} element={<NotFound />} />
             <Route path={Router.Account} element={<Account />} />
             <Route path={Router.Contact} element={<Contact />} />
             <Route path={Router.Forgot} element={<Forgot />} />

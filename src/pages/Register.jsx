@@ -8,7 +8,7 @@ import styled from "styled-components";
 import Messages from "../utils/Messages";
 import { isValidEmail } from "../utils/Formatter";
 
-import Error from "../components/Error";
+import Error from "../components/Error.component";
 import axios from "axios";
 
 export default function Register() {

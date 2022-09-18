@@ -7,5 +7,7 @@ export const Router = {
   Cart: "/panier",
   Product: "/produit/:id",
   ProductList: "/produits",
-  Account: "/mon-compte"
+  Account: "/mon-compte",
+  NotFound: "/404",
+  Logout: "/deconnexion"
 };

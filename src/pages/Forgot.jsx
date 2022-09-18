@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 import styled from "styled-components";
 
-import Back from "../components/Back";
+import Back from "../components/Back.component";
 
 export default function Forgot() {
   const navigate = useNavigate();
