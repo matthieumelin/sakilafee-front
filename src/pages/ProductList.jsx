@@ -18,6 +18,20 @@ export default function ProductList() {
   const dispatch = useDispatch();
   const [filters, setFilters] = useState([{ color: "Blanc", size: "" }]);
 
+  const handleSelect = (event) => {
+    const target = event.target;
+    switch (target.id) {
+      case "colors":
+        break;
+      case "sizes":
+        break;
+      case "prices":
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <Container>
       <Navbar />
@@ -43,16 +57,24 @@ export default function ProductList() {
         <FilterContainer>
           <Filter>
             <FilterText>Produits filtrés par:</FilterText>
-            <Select defaultValue={productFilters.colors[0]}>
-              <Option disabled selected>
+            <Select
+              value={productFilters.colors[0]}
+              onChange={handleSelect}
+              id="colors"
+            >
+              <Option disabled>
                 Couleurs
               </Option>
               {productFilters.colors.map((color, index) => {
                 return <Option key={index}>{color}</Option>;
               })}
             </Select>
-            <Select defaultValue={productFilters.sizes[0]}>
-              <Option disabled selected>
+            <Select
+              value={productFilters.sizes[0]}
+              onChange={handleSelect}
+              id="sizes"
+            >
+              <Option disabled>
                 Tailles
               </Option>
               {productFilters.sizes.map((size, index) => {
@@ -62,10 +84,14 @@ export default function ProductList() {
           </Filter>
           <Filter>
             <FilterText>Filtré par:</FilterText>
-            <Select defaultValue={productFilters.others[0]}>
+            <Select
+              value={productFilters.others[0]}
+              onChange={handleSelect}
+              id="prices"
+            >
               {productFilters.others.map((other, index) => {
                 return (
-                  <Option key={index} selected={index === 0}>
+                  <Option key={index}>
                     {other}
                   </Option>
                 );

@@ -37,7 +37,7 @@ export default function Navbar() {
         <RightItem>
           <RightLink to={Router.Cart}>
             <ShoppingCart />
-            Panier {cart.length ? `(${cart.length})` : null}
+            Panier ({cart.length})
           </RightLink>
         </RightItem>
         <RightItem>
