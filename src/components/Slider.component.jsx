@@ -1,40 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
-import { useState } from "react";
 import styled from "styled-components";
-import { sliderItems } from "../data";
+
+import { useSelector, useDispatch } from "react-redux";
+import { setSliderItems } from "../redux/reducers";
+
+import axios from "axios";
 
 export default function Slider() {
+  const dispatch = useDispatch();
+  const slider = useSelector((state) => state.slider.items);
   const [slideIndex, setSlideIndex] = useState(0);
+
+  useEffect(() => {
+    axios("http://localhost:3030/api/v1/slider", {
+      method: "GET",
+    }).then((res) => {
+      console.log(res.data);
+      dispatch(setSliderItems(res.data));
+    });
+  }, []);
+
   const handleClick = (direction) => {
     if (direction === "left") {
-      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2);
+      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : slider.length - 1);
     } else {
-      setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0);
+      setSlideIndex(slideIndex < slider.length - 1 ? slideIndex + 1 : 0);
     }
   };
+
+  if (!slider.length) return;
+
   return (
     <Container>
-      <Arrow direction="left" onClick={() => handleClick("left")}>
-        <ArrowLeftOutlined />
-      </Arrow>
       <Wrapper slideIndex={slideIndex}>
-        {sliderItems.map((item) => (
-          <Slide bg={item.bg} key={item.id}>
-            <ImgContainer>
-              <Image src={item.img} />
-            </ImgContainer>
+        {slider.map((item) => (
+          <Slide bgColor={item.bgColor} key={item.id}>
+            <Image src={item.image} />
             <InfoContainer>
               <Title>{item.title}</Title>
-              <Desc>{item.desc}</Desc>
+              <Description>{item.description}</Description>
               <Button>Découvrir</Button>
             </InfoContainer>
           </Slide>
         ))}
       </Wrapper>
-      <Arrow direction="right" onClick={() => handleClick("right")}>
-        <ArrowRightOutlined />
-      </Arrow>
+      {slider.length > 1 ? (
+        <>
+          <Arrow direction="left" onClick={() => handleClick("left")}>
+            <ArrowLeftOutlined />
+          </Arrow>
+          <Arrow direction="right" onClick={() => handleClick("right")}>
+            <ArrowRightOutlined />
+          </Arrow>
+        </>
+      ) : null}
     </Container>
   );
 }
@@ -49,6 +69,7 @@ const Container = styled.div`
 
   @media screen and (min-width: 1440px) {
     display: flex;
+    align-items: center;
   }
 `;
 
@@ -83,17 +104,13 @@ const Slide = styled.div`
   height: 100vh;
   display: flex;
   align-items: center;
-  background-color: ${(props) => props.bg};
-`;
-
-const ImgContainer = styled.div`
-  height: 100%;
-  flex: 1;
+  background-color: ${(props) => props.bgColor};
 `;
 
 const Image = styled.img`
   height: 80%;
   display: block;
+  padding: 0 0 0 20px;
 `;
 
 const InfoContainer = styled.div`
@@ -106,7 +123,7 @@ const Title = styled.h1`
   text-transform: uppercase;
 `;
 
-const Desc = styled.p`
+const Description = styled.p`
   margin: 50px 0px;
   font-size: 20px;
   font-weight: 500;

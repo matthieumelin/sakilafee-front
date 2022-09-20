@@ -13,7 +13,7 @@ import axios from "axios";
 
 export default function Register() {
   const navigate = useNavigate();
-  const token = useSelector((state) => state.user.token);
+  const userData = useSelector((state) => state.user.data);
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
@@ -31,7 +31,7 @@ export default function Register() {
   const [errors, setErrors] = useState(initialErrors);
 
   useEffect(() => {
-    if (token) navigate(Router.Account);
+    if (userData) navigate(Router.Account);
   });
 
   const handleInput = (event) => {

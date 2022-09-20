@@ -7,7 +7,7 @@ import { Facebook, Instagram, MailOutline, Phone } from "@mui/icons-material";
 import styled from "styled-components";
 
 import LogoImage from "../assets/logo.png";
-import { Colors } from "../utils/style/Colors";
+import { Colors } from "../utils/Colors";
 
 export default function Footer() {
   return (

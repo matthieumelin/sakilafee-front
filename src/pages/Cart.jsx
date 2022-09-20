@@ -137,7 +137,6 @@ const Top = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
 `;
 
 const TopButton = styled.button`
@@ -287,11 +286,11 @@ const Button = styled.button`
 `;
 
 const NoItem = styled.div`
-padding: 30px 0;
+  padding: 30px 0;
 `;
 
 const NoItemTitle = styled.h2`
-text-align: center;
+  text-align: center;
 `;
 
 const NoItemLink = styled(Link)`

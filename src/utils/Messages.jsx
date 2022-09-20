@@ -16,6 +16,15 @@ const Messages = {
   cgu: {
     required: "Veuillez cocher les CGU.",
   },
+  name: {
+    required: "Veuillez renseigner un nom."
+  },
+  phone: {
+    required: "Veuillez renseigner un numéro de téléphone."
+  },
+  comment: {
+    required: "Veuillez renseigner un message."
+  }
 };
 
 export default Messages;

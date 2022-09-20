@@ -12,12 +12,12 @@ import Messages from "../utils/Messages";
 
 import axios from "axios";
 
-import { setToken } from "../redux/reducers";
+import { setUserData } from "../redux/reducers";
 
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.user.token);
+  const userData = useSelector((state) => state.user.data);
   const [inputs, setInputs] = useState({
     email: "",
     password: "",
@@ -30,14 +30,17 @@ export default function Login() {
   const [errors, setErrors] = useState(initialErrors);
 
   useEffect(() => {
-    if (token) {
+    if (userData) {
       navigate(Router.Account);
     }
   });
 
   const handleInput = (event) => {
     const id = event.target.id;
-    setInputs({ ...inputs, [id]: id === "remember" ? !inputs.remember : event.target.value });
+    setInputs({
+      ...inputs,
+      [id]: id === "remember" ? !inputs.remember : event.target.value,
+    });
   };
 
   const onSubmit = (event) => {
@@ -67,15 +70,15 @@ export default function Login() {
           password: inputs.password,
         })
         .then((response) => {
-          const jwt = response.data.data.token;
-          
+          const data = response.data.data;
+
           if (inputs.remember) {
-            localStorage.setItem("token", jwt);
+            localStorage.setItem("userData", JSON.stringify(response.data.data));
           } else {
-            sessionStorage.setItem("token", jwt);
+            sessionStorage.setItem("userData", JSON.stringify(response.data.data));
           }
 
-          dispatch(setToken(jwt));
+          dispatch(setUserData(data));
           navigate(Router.Account);
         })
         .catch((error) => {

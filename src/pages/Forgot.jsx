@@ -10,10 +10,10 @@ import Back from "../components/Back.component";
 
 export default function Forgot() {
   const navigate = useNavigate();
-  const token = useSelector((state) => state.user.token);
+  const userData = useSelector((state) => state.user.data);
 
   useEffect(() => {
-    if (token) navigate(Router.Home);
+    if (userData) navigate(Router.Home);
   });
 
   return (

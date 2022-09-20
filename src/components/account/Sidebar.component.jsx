@@ -1,19 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import LogoImage from "../../assets/logo.png";
-
 import styled from "styled-components";
-
-import { Colors } from "../../utils/style/Colors";
 
 import { Settings, ShoppingCart } from "@mui/icons-material";
 
+import { useSelector } from "react-redux";
+
 export default function Sidebar() {
+  const userData = useSelector((state) => state.user.data);
+
   return (
     <Container>
-      <Logo alt="Saki Lafée" src={LogoImage} />
+      <Title>Bienvenue, {userData.firstName} !</Title>
+      <Description>Nous sommes heureux de vous voir ici</Description>
       <Menu>
+      <MenuItem>
+          <MenuLink to="/">
+            <MenuLinkIcon>
+              <ShoppingCart />
+            </MenuLinkIcon>
+            Historique des commandes
+          </MenuLink>
+        </MenuItem>
         <MenuItem>
           <MenuLink to="/">
             <MenuLinkIcon>
@@ -22,29 +31,21 @@ export default function Sidebar() {
             Mes paramètres
           </MenuLink>
         </MenuItem>
-        <MenuItem>
-          <MenuLink to="/">
-            <MenuLinkIcon>
-              <ShoppingCart />
-            </MenuLinkIcon>
-            Historique des commandes
-          </MenuLink>
-        </MenuItem>
       </Menu>
     </Container>
   );
 }
-const Container = styled.nav`
-  padding: 20px;
+const Container = styled.aside`
+  padding: 0 20px;
 `;
-const Logo = styled.img`
-  width: 60px;
-  display: block;
+const Title = styled.h1``;
+const Description = styled.p`
+padding: 0;
 `;
 const Menu = styled.ul`
+  padding: 0;
   list-style: none;
-  padding: 20px 0 0 0;
-  display:flex;
+  display: flex;
   flex-direction: column;
   gap: 20px;
 `;
@@ -59,5 +60,5 @@ const MenuLink = styled(Link)`
   align-items: center;
 `;
 const MenuLinkIcon = styled.div`
-width: 50px;
+  width: 50px;
 `;

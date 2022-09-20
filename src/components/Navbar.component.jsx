@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Close, Menu, Person, ShoppingCart } from "@mui/icons-material";
+import { Close, Menu, Person, ShoppingCart, Logout } from "@mui/icons-material";
 import { Link, NavLink } from "react-router-dom";
 import { Router } from "../router/Router";
 
@@ -10,7 +10,7 @@ import LogoImage from "../assets/logo.png";
 import { useSelector } from "react-redux";
 
 export default function Navbar() {
-  const token = useSelector((state) => state.user.token);
+  const userData = useSelector((state) => state.user.data);
   const cart = useSelector((state) => state.user.cart);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,21 +41,32 @@ export default function Navbar() {
           </RightLink>
         </RightItem>
         <RightItem>
-          <RightLink to={token ? Router.Account : Router.Login}>
+          <RightLink to={userData ? Router.Account : Router.Login}>
             <Person />
-            {token ? "Mon compte" : "Se connecter"}
+            {userData
+              ? `${userData.lastName} ${userData.firstName}`
+              : "Se connecter"}
           </RightLink>
         </RightItem>
+        {userData ? (
+          <RightItem>
+            <RightLink to={Router.Logout}>
+              <Logout />
+              Se déconnecter
+            </RightLink>
+          </RightItem>
+        ) : null}
       </Right>
     </Container>
   );
 }
 
 const Container = styled.nav`
-  padding: 20px;
+  padding: 20px 20px 0 20px;
   @media screen and (min-width: 1024px) {
     display: flex;
     align-items: center;
+    padding: 20px;
   }
 `;
 
