@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import { Add, Remove } from "@mui/icons-material";
 
@@ -10,7 +11,6 @@ import Navbar from "../components/Navbar.component";
 
 import { useSelector } from "react-redux";
 import { Router } from "../router/Router";
-import { Link } from "react-router-dom";
 
 export default function Cart() {
   const cart = useSelector((state) => state.user.cart);
@@ -23,7 +23,7 @@ export default function Cart() {
           <Wrapper>
             <Title>Mon panier</Title>
             <Top>
-              <TopButton type="filled">Continuer mes achats</TopButton>
+              <TopButton to={Router.ProductList} type="filled">Continuer mes achats</TopButton>
               <TopTexts>
                 <TopText>Articles (2)</TopText>
                 <TopText>Votre liste d'envies (0)</TopText>
@@ -139,11 +139,12 @@ const Top = styled.div`
   justify-content: space-between;
 `;
 
-const TopButton = styled.button`
+const TopButton = styled(Link)`
   padding: 10px;
-  font-weight: 600;
   font-family: inherit;
   text-transform: uppercase;
+  text-decoration: none;
+  display: block;
   cursor: pointer;
   border: ${(props) => props.type === "filled" && "none"};
   background-color: ${(props) =>

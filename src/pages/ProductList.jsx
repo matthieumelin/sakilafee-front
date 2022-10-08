@@ -65,8 +65,8 @@ export default function ProductList() {
               <Option disabled>
                 Couleurs
               </Option>
-              {productFilters.colors.map((color, index) => {
-                return <Option key={index}>{color}</Option>;
+              {productFilters.colors && productFilters.colors.map((color, index) => {
+                return <Option key={`color_${index}`}>{color.name}</Option>;
               })}
             </Select>
             <Select

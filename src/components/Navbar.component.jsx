@@ -17,7 +17,9 @@ export default function Navbar() {
   return (
     <Container>
       <Wrapper>
-        <Logo src={LogoImage} alt="Logo de Saki Lafée" />
+        <Link to={Router.Home}>
+          <Logo src={LogoImage} alt="Saki Lafée" />
+        </Link>
         <Toggle onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <Close /> : <Menu />}
         </Toggle>

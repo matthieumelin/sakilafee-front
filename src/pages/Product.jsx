@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { Router } from "../router/Router";
 
 import { Add, Remove } from "@mui/icons-material";
@@ -12,13 +12,71 @@ import Footer from "../components/Footer.component";
 import Navbar from "../components/Navbar.component";
 import Newsletter from "../components/Newsletter.component";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setCart } from "../redux/reducers";
+
+import { Colors } from "../utils/Colors";
+
+import { productFilters } from "../data";
 
 export default function Product() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
   const product = useSelector((state) =>
     state.products.items.find((product) => product.id === parseInt(id))
   );
+  const cart = useSelector((state) => state.user.cart);
+
+  const [quantity, setQuantity] = useState(1);
+
+  const handleQuantity = (action) => {
+    switch (action) {
+      case "add":
+        if (quantity < product.maxStock) {
+          setQuantity(quantity + 1);
+        }
+        break;
+      case "remove":
+        if (quantity > 1) {
+          setQuantity(quantity - 1);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const addToCart = (item) => {
+    const newCart = [...cart];
+    const lastItemIndex = newCart.findIndex(
+      (cartItem) => cartItem.id === item.id
+    );
+
+    if (lastItemIndex !== -1) {
+      const currentItem = newCart[lastItemIndex];
+
+      Object.freeze(currentItem);
+
+      const newItemCopy = { ...currentItem };
+      // maybe replace all data by new ?
+      newItemCopy.quantity += quantity;
+
+      newCart.splice(lastItemIndex, 1, newItemCopy);
+    } else {
+      const newItem = { ...item, quantity: quantity };
+      newCart.push(newItem);
+    }
+
+    sessionStorage.setItem("cart", JSON.stringify(newCart));
+
+    dispatch(setCart(newCart));
+
+    navigate(Router.Cart);
+
+    setQuantity(1);
+  };
 
   if (!product) {
     return <Navigate to={Router.ProductList} />;
@@ -31,27 +89,24 @@ export default function Product() {
         <Announcement />
         <Wrapper>
           <ImgContainer>
-            <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+            <Image src={product.img} />
           </ImgContainer>
           <InfoContainer>
-            <Title>Denim Jumpsuit</Title>
-            <Desc>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-              iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-              tristique tortor pretium ut. Curabitur elit justo, consequat id
-              condimentum ac, volutpat ornare.
-            </Desc>
-            <Price>$ 20</Price>
+            <Title>{product.name}</Title>
+            <Desc>{product.description}</Desc>
+            <Price>{product.price} €</Price>
             <FilterContainer>
               <Filter>
-                <FilterTitle>Color</FilterTitle>
-                <FilterColor color="black" />
-                <FilterColor color="darkblue" />
-                <FilterColor color="gray" />
+                <FilterTitle>Couleur</FilterTitle>
+                {productFilters.colors &&
+                  productFilters.colors.map((color, index) => {
+                    return (
+                      <FilterColor key={`color_${index}`} color={color.value} />
+                    );
+                  })}
               </Filter>
               <Filter>
-                <FilterTitle>Size</FilterTitle>
+                <FilterTitle>Taille</FilterTitle>
                 <FilterSize>
                   <FilterSizeOption>XS</FilterSizeOption>
                   <FilterSizeOption>S</FilterSizeOption>
@@ -63,11 +118,13 @@ export default function Product() {
             </FilterContainer>
             <AddContainer>
               <AmountContainer>
-                <Remove />
-                <Amount>1</Amount>
-                <Add />
+                <Remove onClick={() => handleQuantity("remove")} />
+                <Amount>{quantity}</Amount>
+                <Add onClick={() => handleQuantity("add")} />
               </AmountContainer>
-              <Button>ADD TO CART</Button>
+              <Button onClick={() => addToCart(product)}>
+                Ajouter au panier
+              </Button>
             </AddContainer>
           </InfoContainer>
         </Wrapper>
@@ -90,25 +147,26 @@ const Wrapper = styled.div`
   @media screen and (min-width: 1024px) {
     padding: 50px;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
-const ImgContainer = styled.div`
-  flex: 1;
-`;
+const ImgContainer = styled.div``;
 
 const Image = styled.img`
-  width: 100%;
-  height: 40vh;
+  width: 350px;
+  height: 350px;
   object-fit: cover;
+  display: block;
 
   @media screen and (min-width: 1024px) {
-    height: 90vh;
+    width: 500px;
+    height: 500px;
   }
 `;
 
 const InfoContainer = styled.div`
-  flex: 1;
   padding: 10px;
 
   @media screen and (min-width: 1024px) {
@@ -117,7 +175,7 @@ const InfoContainer = styled.div`
 `;
 
 const Title = styled.h1`
-  font-weight: 200;
+  font-weight: 400;
 `;
 
 const Desc = styled.p`
@@ -132,10 +190,11 @@ const Price = styled.span`
 const FilterContainer = styled.div`
   margin: 30px 0px;
   display: flex;
-  justify-content: space-between;
-  width: 100%;
+  flex-direction: column;
+  gap: 20px;
   @media screen and (min-width: 1024px) {
-    width: 50%;
+    flex-direction: row;
+    justify-content: space-between;
   }
 `;
 
@@ -161,6 +220,7 @@ const FilterColor = styled.div`
 const FilterSize = styled.select`
   margin-left: 10px;
   padding: 5px;
+  outline: none;
 `;
 
 const FilterSizeOption = styled.option``;
@@ -170,10 +230,6 @@ const AddContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  @media screen and (min-width: 1024px) {
-    width: 50%;
-  }
 `;
 
 const AmountContainer = styled.div`
@@ -186,7 +242,7 @@ const Amount = styled.span`
   width: 30px;
   height: 30px;
   border-radius: 10px;
-  border: 1px solid teal;
+  border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -195,11 +251,9 @@ const Amount = styled.span`
 
 const Button = styled.button`
   padding: 15px;
-  border: 2px solid teal;
+  border: 2px solid black;
   background-color: white;
   cursor: pointer;
   font-weight: 500;
-  &:hover {
-    background-color: #f8f4f4;
-  }
+  font-family: inherit;
 `;

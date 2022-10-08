@@ -13,7 +13,9 @@ export default function Footer() {
   return (
     <Container>
       <Left>
-        <Logo src={LogoImage} alt="Logo de Saki Lafée" />
+        <Link to={Router.Home}>
+          <Logo src={LogoImage} alt="Saki Lafée" />
+        </Link>
         <Desc>
           Saki Lafée brode et pesonnalise toutes vos envies pour vous ou pour
           offrir.
@@ -110,7 +112,7 @@ const SocialsLink = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   @media screen and (min-width: 1024px) {
     transition: 0.2s;
 
