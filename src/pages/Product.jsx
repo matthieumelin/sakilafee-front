@@ -29,6 +29,8 @@ export default function Product() {
   );
   const cart = useSelector((state) => state.user.cart);
 
+  const [size, setSize] = useState(productFilters.sizes[0]);
+  const [color, setColor] = useState(productFilters.colors[0]);
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantity = (action) => {
@@ -60,12 +62,13 @@ export default function Product() {
       Object.freeze(currentItem);
 
       const newItemCopy = { ...currentItem };
-      // maybe replace all data by new ?
+      newItemCopy.size = size;
+      newItemCopy.color = color;
       newItemCopy.quantity += quantity;
 
       newCart.splice(lastItemIndex, 1, newItemCopy);
     } else {
-      const newItem = { ...item, quantity: quantity };
+      const newItem = { ...item, size: size, color: color, quantity: quantity };
       newCart.push(newItem);
     }
 
@@ -76,6 +79,8 @@ export default function Product() {
     navigate(Router.Cart);
 
     setQuantity(1);
+
+    console.log(newCart)
   };
 
   if (!product) {
@@ -101,26 +106,45 @@ export default function Product() {
                 {productFilters.colors &&
                   productFilters.colors.map((color, index) => {
                     return (
-                      <FilterColor key={`color_${index}`} color={color.value} />
+                      <FilterColor
+                        key={`color_${index}`}
+                        color={color.value}
+                        value={color}
+                        onClick={() => setColor(color)}
+                      />
                     );
                   })}
               </Filter>
               <Filter>
                 <FilterTitle>Taille</FilterTitle>
                 <FilterSize>
+                  {productFilters.sizes &&
+                    productFilters.sizes.map((size, index) => {
+                      return (
+                        <FilterSizeOption
+                          key={`size_${index}`}
+                          value={size}
+                          onChange={() => setSize(size)}
+                        >
+                          {size}
+                        </FilterSizeOption>
+                      );
+                    })}
                   <FilterSizeOption>XS</FilterSizeOption>
-                  <FilterSizeOption>S</FilterSizeOption>
-                  <FilterSizeOption>M</FilterSizeOption>
-                  <FilterSizeOption>L</FilterSizeOption>
-                  <FilterSizeOption>XL</FilterSizeOption>
                 </FilterSize>
               </Filter>
             </FilterContainer>
             <AddContainer>
               <AmountContainer>
-                <Remove onClick={() => handleQuantity("remove")} />
+                <Remove
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleQuantity("remove")}
+                />
                 <Amount>{quantity}</Amount>
-                <Add onClick={() => handleQuantity("add")} />
+                <Add
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleQuantity("add")}
+                />
               </AmountContainer>
               <Button onClick={() => addToCart(product)}>
                 Ajouter au panier
