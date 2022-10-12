@@ -16,14 +16,19 @@ import { setCategoryItems } from "../redux/reducers";
 export default function ProductList() {
   const categoryItems = useSelector((state) => state.products.categoryItems);
   const dispatch = useDispatch();
-  const [filters, setFilters] = useState([{ color: "Blanc", size: "" }]);
+  const [filters, setFilters] = useState({
+    color: productFilters.colors[0].name,
+    size: productFilters.sizes[0],
+  });
 
   const handleSelect = (event) => {
     const target = event.target;
     switch (target.id) {
       case "colors":
+        setFilters({ ...filters, color: target.value });
         break;
       case "sizes":
+        setFilters({ ...filters, size: target.value });
         break;
       case "prices":
         break;
@@ -57,26 +62,15 @@ export default function ProductList() {
         <FilterContainer>
           <Filter>
             <FilterText>Produits filtrés par:</FilterText>
-            <Select
-              value={productFilters.colors[0]}
-              onChange={handleSelect}
-              id="colors"
-            >
-              <Option disabled>
-                Couleurs
-              </Option>
-              {productFilters.colors && productFilters.colors.map((color, index) => {
-                return <Option key={`color_${index}`}>{color.name}</Option>;
-              })}
+            <Select value={filters.color} onChange={handleSelect} id="colors">
+              <Option disabled>Couleurs</Option>
+              {productFilters.colors &&
+                productFilters.colors.map((color, index) => {
+                  return <Option key={`color_${index}`}>{color.name}</Option>;
+                })}
             </Select>
-            <Select
-              value={productFilters.sizes[0]}
-              onChange={handleSelect}
-              id="sizes"
-            >
-              <Option disabled>
-                Tailles
-              </Option>
+            <Select value={filters.size} onChange={handleSelect} id="sizes">
+              <Option disabled>Tailles</Option>
               {productFilters.sizes.map((size, index) => {
                 return <Option key={index}>{size}</Option>;
               })}
@@ -90,16 +84,12 @@ export default function ProductList() {
               id="prices"
             >
               {productFilters.others.map((other, index) => {
-                return (
-                  <Option key={index}>
-                    {other}
-                  </Option>
-                );
+                return <Option key={index}>{other}</Option>;
               })}
             </Select>
           </Filter>
         </FilterContainer>
-        <Products />
+        <Products filters={filters} />
         <Newsletter />
       </Main>
       <Footer />

@@ -13,12 +13,14 @@ export default function Slider() {
   const [slideIndex, setSlideIndex] = useState(0);
 
   useEffect(() => {
-    axios("http://localhost:3030/api/v1/slider", {
-      method: "GET",
-    }).then((res) => {
-      console.log(res.data);
-      dispatch(setSliderItems(res.data));
-    });
+    const fetchData = async () => {
+      await axios("http://localhost:3030/api/v1/slider", {
+        method: "GET",
+      }).then((res) => {
+        dispatch(setSliderItems(res.data));
+      });
+    }
+    fetchData();
   }, []);
 
   const handleClick = (direction) => {

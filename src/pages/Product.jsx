@@ -79,8 +79,6 @@ export default function Product() {
     navigate(Router.Cart);
 
     setQuantity(1);
-
-    console.log(newCart)
   };
 
   if (!product) {
@@ -104,13 +102,13 @@ export default function Product() {
               <Filter>
                 <FilterTitle>Couleur</FilterTitle>
                 {productFilters.colors &&
-                  productFilters.colors.map((color, index) => {
+                  productFilters.colors.map((item, index) => {
                     return (
                       <FilterColor
                         key={`color_${index}`}
-                        color={color.value}
-                        value={color}
-                        onClick={() => setColor(color)}
+                        color={item.value}
+                        value={color.value}
+                        onClick={() => setColor(item)}
                       />
                     );
                   })}
@@ -233,15 +231,32 @@ const FilterTitle = styled.span`
 `;
 
 const FilterColor = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: ${(props) => props.color};
   margin: 0px 5px;
   cursor: pointer;
+  position: relative;
+
+  &::before {
+    width: 40px;
+    height: 40px;
+    border-radius: inherit;
+    content: "";
+    border: ${(props) =>
+      props.color === props.value
+        ? "2px solid black"
+        : "2px solid transparent"};
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 const FilterSize = styled.select`
+  font-family: inherit;
   margin-left: 10px;
   padding: 5px;
   outline: none;

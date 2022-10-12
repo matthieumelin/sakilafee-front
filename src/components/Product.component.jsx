@@ -19,11 +19,8 @@ export default function Product({ item }) {
         <Icon>
           <VisibilityRounded />
         </Icon>
-        <Icon to="#">
+        <Icon>
           <ShoppingCartOutlined />
-        </Icon>
-        <Icon to="#">
-          <FavoriteBorderOutlined />
         </Icon>
       </Info>
     </Container>

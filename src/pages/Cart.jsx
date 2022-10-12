@@ -9,11 +9,53 @@ import Announcement from "../components/Announcement.component";
 import Footer from "../components/Footer.component";
 import Navbar from "../components/Navbar.component";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Router } from "../router/Router";
+import { setCart } from "../redux/reducers";
 
 export default function Cart() {
+  const dispatch = useDispatch();
   const cart = useSelector((state) => state.user.cart);
+
+  const getSumPrice = () => {
+    return cart.reduce((accumulator, item) => {
+      return accumulator + item.price;
+    }, 0);
+  };
+
+  const handleQuantity = (action, item) => {
+    const newCart = [...cart];
+    const lastItemIndex = newCart.findIndex(
+      (cartItem) => cartItem.id === item.id
+    );
+
+    if (lastItemIndex !== -1) {
+      const currentItem = newCart[lastItemIndex];
+      const newItemCopy = { ...currentItem };
+
+      switch (action) {
+        case "add":
+          if (currentItem.quantity < item.maxStock) {
+            newItemCopy.quantity += 1;
+            newCart.splice(lastItemIndex, 1, newItemCopy);
+          }
+          break;
+        case "remove":
+          if (currentItem.quantity > 1) {
+            newItemCopy.quantity -= 1;
+            newCart.splice(lastItemIndex, 1, newItemCopy);            
+          } else {
+            newCart.splice(currentItem, 1);
+            sessionStorage.setItem("cart", JSON.stringify(newCart));
+          }
+          break;
+        default:
+          break;
+      }
+      dispatch(setCart(newCart));
+    }
+  };
+
   return (
     <Container>
       <Navbar />
@@ -23,71 +65,60 @@ export default function Cart() {
           <Wrapper>
             <Title>Mon panier</Title>
             <Top>
-              <TopButton to={Router.ProductList} type="filled">Continuer mes achats</TopButton>
+              <TopButton to={Router.ProductList} type="filled">
+                Continuer mes achats
+              </TopButton>
               <TopTexts>
-                <TopText>Articles (2)</TopText>
-                <TopText>Votre liste d'envies (0)</TopText>
+                <TopText>Articles ({cart.length})</TopText>
               </TopTexts>
             </Top>
             <Bottom>
               <Info>
-                <Product>
-                  <ProductDetail>
-                    <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                    <Details>
-                      <ProductName>
-                        <b>Product:</b> JESSIE THUNDER SHOES
-                      </ProductName>
-                      <ProductId>
-                        <b>ID:</b> 93813718293
-                      </ProductId>
-                      <ProductSize>
-                        <b>Size:</b> 37.5
-                      </ProductSize>
-                      <ProductColor color="black" />
-                    </Details>
-                  </ProductDetail>
-                  <PriceDetail>
-                    <ProductAmountContainer>
-                      <Add />
-                      <ProductAmount>2</ProductAmount>
-                      <Remove />
-                    </ProductAmountContainer>
-                    <ProductPrice>$ 30</ProductPrice>
-                  </PriceDetail>
-                </Product>
-                <Hr />
-                <Product>
-                  <ProductDetail>
-                    <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
-                    <Details>
-                      <ProductName>
-                        <b>Product:</b> HAKURA T-SHIRT
-                      </ProductName>
-                      <ProductId>
-                        <b>ID:</b> 93813718293
-                      </ProductId>
-                      <ProductSize>
-                        <b>Size:</b> M
-                      </ProductSize>
-                      <ProductColor color="gray" />
-                    </Details>
-                  </ProductDetail>
-                  <PriceDetail>
-                    <ProductAmountContainer>
-                      <Add />
-                      <ProductAmount>1</ProductAmount>
-                      <Remove />
-                    </ProductAmountContainer>
-                    <ProductPrice>$ 20</ProductPrice>
-                  </PriceDetail>
-                </Product>
+                {cart &&
+                  cart.map((item, index) => {
+                    return (
+                      <Product key={index}>
+                        <ProductDetail>
+                          <Image src={item.img} />
+                          <Details>
+                            <ProductGroup>
+                              <Strong>Product:</Strong> {item.name}
+                            </ProductGroup>
+                            <ProductGroup>
+                              <Strong>Catégorie:</Strong> {item.category}
+                            </ProductGroup>
+                            <ProductGroup>
+                              <Strong>Taille:</Strong> {item.size}
+                            </ProductGroup>
+                            <ProductGroup>
+                              <Strong>Couleur:</Strong>
+                              <ProductColor color={item.color.value} />
+                            </ProductGroup>
+                          </Details>
+                        </ProductDetail>
+                        <PriceDetail>
+                          <ProductAmountContainer>
+                            <Add
+                              onClick={() => handleQuantity("add", item)}
+                              style={{ cursor: "pointer" }}
+                            />
+                            <ProductAmount>{item.quantity}</ProductAmount>
+                            <Remove
+                              onClick={() => handleQuantity("remove", item)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </ProductAmountContainer>
+                          <ProductPrice>€ {item.price}</ProductPrice>
+                        </PriceDetail>
+                      </Product>
+                    );
+                  })}
               </Info>
               <Summary>
                 <SummaryTitle>Résumé de la commande</SummaryTitle>
                 <SummaryItem>
                   <SummaryItemText>Articles</SummaryItemText>
-                  <SummaryItemPrice>80€</SummaryItemPrice>
+                  <SummaryItemPrice>{getSumPrice()} €</SummaryItemPrice>
                 </SummaryItem>
                 <SummaryItem>
                   <SummaryItemText>Frais de livraison</SummaryItemText>
@@ -171,12 +202,14 @@ const Bottom = styled.div`
   flex-direction: column;
 
   @media screen and (min-width: 1024px) {
+    margin: 20px 0 0 0;
     flex-direction: row;
   }
 `;
 
 const Info = styled.div`
   flex: 3;
+  margin: 30px 0 0 0;
 `;
 
 const Product = styled.div`
@@ -210,18 +243,23 @@ const Details = styled.div`
   justify-content: space-around;
 `;
 
-const ProductName = styled.span``;
+const Strong = styled.strong``;
 
-const ProductId = styled.span``;
+const ProductGroup = styled.div``;
 
 const ProductColor = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: ${(props) => props.color};
-`;
+  border: 1px solid
+    ${(props) => (props.color.includes("white") ? "black" : null)};
+  margin: 5px 0 0 0;
 
-const ProductSize = styled.span``;
+  @media screen and (min-width: 1024px) {
+    margin: 10px 0 0 0;
+  }
+`;
 
 const PriceDetail = styled.div`
   padding: 0 20px;
